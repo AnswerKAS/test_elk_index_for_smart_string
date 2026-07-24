@@ -1,0 +1,163 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "filter": {
+        "russian_stop": {
+          "type": "stop",
+          "stopwords": "_russian_"
+        },
+        "russian_stemmer": {
+          "type": "stemmer",
+          "language": "russian"
+        },
+        "ru_synonym_filter": {
+          "type": "synonym_graph",
+          "synonyms": [
+            "гарнитура, наушники, ганитура, headset, хедсет",
+            "звук, аудио, динамики",
+            "не работает, сломан, не функционирует, барахлит, глючит",
+            "не слышно, не слышат, тишина, пропал звук",
+            "пароль, доступ, логин, учетная запись, учетка",
+            "вылетает, крашится, зависает, падает, тормозит",
+            "vpn, впн, удаленный доступ",
+            "wifi, wi-fi, вайфай, беспроводная сеть",
+            "принтер, печать, печатает"
+          ]
+        }
+      },
+      "normalizer": {
+        "lowercase_normalizer": {
+          "type": "custom",
+          "filter": ["lowercase"]
+        }
+      },
+      "analyzer": {
+        "ru_index_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "russian_stop", "russian_stemmer"]
+        },
+        "ru_search_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "ru_synonym_filter", "russian_stop", "russian_stemmer"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "chat": {
+        "properties": {
+          "chat_id": { "type": "keyword" },
+          "chat_name": {
+            "type": "text",
+            "analyzer": "ru_index_analyzer",
+            "search_analyzer": "ru_search_analyzer",
+            "fields": {
+              "keyword": { "type": "keyword", "normalizer": "lowercase_normalizer", "ignore_above": 256 }
+            }
+          },
+          "chat_ai_summary": {
+            "type": "text",
+            "analyzer": "ru_index_analyzer",
+            "search_analyzer": "ru_search_analyzer",
+            "fields": {
+              "keyword": { "type": "keyword", "normalizer": "lowercase_normalizer", "ignore_above": 512 }
+            }
+          },
+          "chat_full_user_text": {
+            "type": "text",
+            "analyzer": "ru_index_analyzer",
+            "search_analyzer": "ru_search_analyzer"
+          },
+          "chat_create_at": { "type": "date" }
+        }
+      },
+      "category": {
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "keyword", "normalizer": "lowercase_normalizer" },
+          "description": {
+            "type": "text",
+            "analyzer": "ru_index_analyzer",
+            "search_analyzer": "ru_search_analyzer"
+          }
+        }
+      },
+      "service": {
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "keyword", "normalizer": "lowercase_normalizer" },
+          "synonyms": { "type": "keyword", "normalizer": "lowercase_normalizer" },
+          "description": {
+            "type": "text",
+            "analyzer": "ru_index_analyzer",
+            "search_analyzer": "ru_search_analyzer"
+          },
+          "tags": { "type": "keyword", "normalizer": "lowercase_normalizer" },
+          "full_path": { "type": "keyword" }
+        }
+      },
+      "subtype": {
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "keyword", "normalizer": "lowercase_normalizer" },
+          "synonyms": { "type": "keyword", "normalizer": "lowercase_normalizer" },
+          "description": {
+            "type": "text",
+            "analyzer": "ru_index_analyzer",
+            "search_analyzer": "ru_search_analyzer"
+          },
+          "tags": { "type": "keyword", "normalizer": "lowercase_normalizer" }
+        }
+      },
+      "user": {
+        "properties": {
+          "email": { "type": "keyword" },
+          "org": {
+            "properties": {
+              "title1": {
+                "type": "keyword",
+                "normalizer": "lowercase_normalizer",
+                "fields": {
+                  "text": { "type": "text", "analyzer": "ru_index_analyzer", "search_analyzer": "ru_search_analyzer" }
+                }
+              },
+              "title2": {
+                "type": "keyword",
+                "normalizer": "lowercase_normalizer",
+                "fields": {
+                  "text": { "type": "text", "analyzer": "ru_index_analyzer", "search_analyzer": "ru_search_analyzer" }
+                }
+              },
+              "title3": {
+                "type": "keyword",
+                "normalizer": "lowercase_normalizer",
+                "fields": {
+                  "text": { "type": "text", "analyzer": "ru_index_analyzer", "search_analyzer": "ru_search_analyzer" }
+                }
+              },
+              "title4": {
+                "type": "keyword",
+                "normalizer": "lowercase_normalizer",
+                "fields": {
+                  "text": { "type": "text", "analyzer": "ru_index_analyzer", "search_analyzer": "ru_search_analyzer" }
+                }
+              },
+              "title5": {
+                "type": "keyword",
+                "normalizer": "lowercase_normalizer",
+                "fields": {
+                  "text": { "type": "text", "analyzer": "ru_index_analyzer", "search_analyzer": "ru_search_analyzer" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
